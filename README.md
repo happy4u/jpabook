@@ -105,3 +105,62 @@ JPA를 사용하는 데 가장 중요한 일은 엔티티와 테이블을 정확
 
 
 
+
+### @Entity
+
+- 테이블과 매핑할 클래스의 어노테이션으로 사용
+- @Entity 적용 시 주의사항
+  - 기본 생성자는 필수다.(파라미터 없는 public or protected 생성자)
+  - final 클래스, enum, interface, inner 클래스에는 사용할 수 없다.
+  - 저장할 필드에 final을 사용하면 안 된다.
+
+
+
+### @Table
+
+- 엔티티와 매핑할 테이블을 지정. 생략하면 매핑한 엔티티 이름을 테이블 이름으로 사용
+
+
+
+### 데이터베이스 스키마 자동 생성
+
+- persistence.xml에
+
+  - hibernate.hbm2ddl.auto 속성 지정으로 자동 생성 가능
+
+    - | 옵션          | 설명                                       |
+      | ----------- | ---------------------------------------- |
+      | create      | 기존 테이블 삭제하고 새로 생성. DROP + CREATE         |
+      | create-drop | create 속성에 추가로 애플리케이션 종료할 때 생성한 DDL을 제거. DROP + CREATE + DROP |
+      | update      | 데이터베이스 테이블과 엔티티 매핑정보를 비교해서 변경 사항만 수정     |
+      | validate    | 데이터베이스 테이블과 엔티티 매핑정보를 비교해서 차이가 있으면 경고를 남기고 애플리케이션을 실행하지 않음 |
+      | none        | 자동 생성 기능을 사용하지 않으려면 유효하지 않은 옵션 값을 주면 됨. none은 유효하지 않은 옵션 값 |
+
+  - hibernate.show_sql 속성으로 DDL 출력 가능
+
+  - hibernate.ejb.naming_strategy : 이름 매핑 전략으로 java의 카멜case를 언더스코어 표기법으로 변환해 DDL을 수행
+
+
+
+### 기본 키 매핑
+
+- 오라클의 시퀀스 오브젝트나 MySQL의 AUTO_INCREMENT 같은 기능을 사용해서 생성된 값을 기본 키로 사용하려면?
+
+JPA가 제공하는 데이터베이스 기본 키 생성 전략
+
+- 직접 할당 : 기본 키를 애플리케이션에서 직접 할당한다.
+- 자동생성 : 대리 키 사용 방식
+  - IDENTITY : 기본 키 생성을 데이터베이스에 위임한다. (MySQL, PostgreSQL, MS SQL Server, DB2)
+  - SEQUENCE : 데이터베이스 시퀀스를 사용해서 기본 키를 할당한다. (오라클, PostgreSQL, DB2, H2)
+  - TABLE : 키 생성 테이블을 사용한다.
+    - TABLE 전략은 시퀀스 대신에 테이블을 사용한다는 것만 제외하면 SEQUENCE 전략과 내부 동작방식이 같다.
+  - AUTO : 데이터베이스에 따라 IDENTITY나 SEQUENCE를 자동 선택
+
+
+
+
+
+
+
+
+
