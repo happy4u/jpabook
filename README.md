@@ -524,7 +524,78 @@ ex> 회원과 상품의 관계로 설명해본다.
 
 
 
-#### 다대다: 단방향
+#### 다대다 : 단방향
 
-회원이 상품을 갖는 구조
+회원과 상품의 구조를 예로 살펴본다.
+
+
+
+다대다 단방향 회원
+
+```java
+@Entity
+public class Member{
+	@Id @column(name="MEMBER_ID")
+
+	private String id;
+
+	private String username;
+
+	@ManyToMany
+	@JoinTable(name="MEMBER_PRODUCT", 
+		joinColumn = @JoinColumn(name="MEMBER_ID"),
+		inverseJoinColumn = @JoinColumn(name="PRODUCT_ID"))
+	private List<Product> products = new ArrayList<Product>();
+
+}
+```
+
+
+
+다대다 단방향 상품
+
+```
+@Entity
+public class Product{
+  
+  @Id @cloumn (name="PRODUCT_ID")
+  private String id;
+  
+  private String name;
+  ...
+}
+```
+
+
+
+* 중요한 점은 @ManyToMany와 @JoinTable을 사용해서 연결 테이블을 바로 매핑한 것이다. 따라서 연결을 위한 회원_상품(Member_Product) 엔티티 없이 매핑을 완료할 수 있다.
+
+
+
+#### 다대다 : 양방향
+
+역방향 추가
+
+```
+@Entity
+public class Product{
+  
+  @Id @cloumn (name="PRODUCT_ID")
+  private String id;
+  
+  @ManyToMany(mappedBy="products")
+  private List<Member> = members;
+  ...
+}
+```
+
+* 양방향의 경우 이전에 설명한 것처럼 연관관계 편의 메소드(member에 product를 넣으면 product에 member를 넣어주도록)를 추가하자.
+
+
+
+### 다대다 : 매핑의 한계와 극복, 연결 엔티티 사용
+
+ManyToMany를 사용하면 연결 테이블을 자동으로 처리해주므로 도메인 모델이 단순해지고 여러 가지로 편리하다. 하지만 이 매핑을 실무에서 사용하기에는 한계가 있다. 예를들어 매핑정보외에 추가 정보가 필요한 경우이다.
+
+이런 경우에는 중간에 매핑을 위한 엔티티를 중간에 두고, 일대다 다대일 관계를 이용해야 한다.
 
